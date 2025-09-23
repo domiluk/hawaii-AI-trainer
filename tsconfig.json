@@ -1,0 +1,31 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./sketch/",
+    "outFile": "./build/build.js",
+
+    // Environment Settings
+    "moduleResolution": "node",
+    "module": "none",
+    "target": "es6",
+
+    // Other Outputs
+    "sourceMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "preserveConstEnums": false,
+    "strictNullChecks": true,
+    "removeComments": true,
+
+    // Recommended Options
+    "strict": true,
+    "noUncheckedSideEffectImports": true,
+  }
+}

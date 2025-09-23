@@ -1,0 +1,24 @@
+{
+    "name": "hawaii-ai-trainer",
+    "version": "1.0.0",
+    "description": "Training program for neural network boat AI for hawaii game remake",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "tsc --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/domiluk/hawaii-AI-trainer.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/domiluk/hawaii-AI-trainer/issues"
+    },
+    "homepage": "https://github.com/domiluk/hawaii-AI-trainer#readme",
+    "devDependencies": {
+        "@types/p5": "^1.7.6",
+        "typescript": "^5.9.2"
+    }
+}

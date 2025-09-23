@@ -128,6 +128,8 @@ function draw() {
         boat.update()
         boat.draw()
     }
+    // draw the best boat again on top
+    boats[0]!.draw()
 
     topLeftIsland.draw()
     bottomRightIsland.draw()

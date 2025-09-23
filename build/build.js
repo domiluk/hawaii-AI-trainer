@@ -4,7 +4,7 @@ const ROTATE_BY = 1.5 * 60;
 const MAX_SPEED = 6.5 * 60;
 const ACCEL = 0.05 * 3600;
 const SLOWDOWN = 0.08 * 3600;
-const INPUTS = 8;
+const INPUTS = 3;
 const HIDDEN = 16;
 const OUTPUTS = 2;
 class Boat {
@@ -53,15 +53,11 @@ class Boat {
             QC[i] = closestPointOnSegment(checkpointSegments[i], pos);
             dC[i] = p5.Vector.sub(pos, QC[i]).mag();
         }
+        const alpha = atan2(QC[this.checkpoint].y - this.y, QC[this.checkpoint].x - this.x) - this.rot;
         const inputs = [[]];
-        inputs[0][0] = map(this.x, 0, 2100, -1, 1);
-        inputs[0][1] = map(this.y, 0, 2100, -1, 1);
-        inputs[0][2] = sin(this.rot);
-        inputs[0][3] = cos(this.rot);
-        inputs[0][4] = map(QC[this.checkpoint].x, 0, 2100, -1, 1);
-        inputs[0][5] = map(QC[this.checkpoint].y, 0, 2100, -1, 1);
-        inputs[0][6] = this.checkpoint < 2 ? 1 : 0;
-        inputs[0][7] = this.checkpoint >= 2 ? 1 : 0;
+        inputs[0][0] = sin(alpha);
+        inputs[0][1] = cos(alpha);
+        inputs[0][2] = map(dC[this.checkpoint], 0, 2832, 0, 1);
         const move = this.net.predict01(inputs);
         this.speed += accel;
         if (move[0]) {
@@ -70,6 +66,7 @@ class Boat {
         if (move[1]) {
             this.rot += rotate_by;
         }
+        this.rot = modulo(this.rot, 360);
         this.speed = constrain(this.speed, 0, MAX_SPEED);
         const r = BOAT_COLLISION_RADIUS;
         const vx = this.speed * cos(this.rot);
@@ -118,6 +115,9 @@ class Boat {
             this.fitness += pow(2, max(0, 5 - this.timeAtCheckpoints[3])) - 1;
         }
     }
+}
+function modulo(a, b) {
+    return ((a % b) + b) % b;
 }
 const DT_HISTORY_LENGTH = 400;
 const dtHistory = Array(DT_HISTORY_LENGTH).fill(0);
@@ -467,6 +467,7 @@ function draw() {
         boat.update();
         boat.draw();
     }
+    boats[0].draw();
     topLeftIsland.draw();
     bottomRightIsland.draw();
     for (const segment of checkpointSegments) {

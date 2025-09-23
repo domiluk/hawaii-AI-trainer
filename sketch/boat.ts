@@ -4,7 +4,7 @@ const MAX_SPEED = 6.5 * 60 // px/s, originally 10
 const ACCEL = 0.05 * 3600 // px/s²
 const SLOWDOWN = 0.08 * 3600 // px/s²
 
-const INPUTS = 8 // number of inputs
+const INPUTS = 3 // number of inputs
 const HIDDEN = 16 // hidden size (8–16 is fine)
 const OUTPUTS = 2 // outputs: left, right
 
@@ -76,24 +76,16 @@ class Boat {
             dC[i] = p5.Vector.sub(pos, QC[i]!).mag()
         }
 
+        const alpha =
+            atan2(QC[this.checkpoint]!.y - this.y, QC[this.checkpoint]!.x - this.x) - this.rot
+
         const inputs: number[][] = [[]]
 
-        inputs[0]![0] = map(this.x, 0, 2100, -1, 1)
-        inputs[0]![1] = map(this.y, 0, 2100, -1, 1)
+        inputs[0]![0] = sin(alpha)
+        inputs[0]![1] = cos(alpha)
+        inputs[0]![2] = map(dC[this.checkpoint]!, 0, 2832, 0, 1)
 
-        inputs[0]![2] = sin(this.rot)
-        inputs[0]![3] = cos(this.rot)
-
-        // inputs[0][??] = map(dC[this.checkpoint], 0, 2832, 1, 0)
-        // diagonal of 2100x1900 is 2832
-
-        inputs[0]![4] = map(QC[this.checkpoint]!.x, 0, 2100, -1, 1)
-        inputs[0]![5] = map(QC[this.checkpoint]!.y, 0, 2100, -1, 1)
-
-        inputs[0]![6] = this.checkpoint < 2 ? 1 : 0
-        inputs[0]![7] = this.checkpoint >= 2 ? 1 : 0
-
-        const move = this.net.predict01(inputs) // [1, 0, 1, 0]
+        const move = this.net.predict01(inputs)
 
         // move the boat
         this.speed += accel
@@ -103,6 +95,7 @@ class Boat {
         if (move[1]) {
             this.rot += rotate_by
         }
+        this.rot = modulo(this.rot, 360)
 
         // limit speed
         this.speed = constrain(this.speed, 0, MAX_SPEED)
@@ -165,4 +158,8 @@ class Boat {
             this.fitness += pow(2, max(0, 5 - this.timeAtCheckpoints[3])) - 1
         }
     }
+}
+
+function modulo(a: number, b: number) {
+    return ((a % b) + b) % b
 }
